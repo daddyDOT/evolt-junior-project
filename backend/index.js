@@ -3,22 +3,25 @@ const http = require('http');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const socketIo = require('socket.io');
+const messagesRouter = require('./routes/getMessages');
 const Message = require('./models/messageModel');
 
 require('dotenv').config();
 
 const app = express();
+const mongoDB = process.env.MONGODB_URI;
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const mongoDB = process.env.MONGODB_URI;
-
+// database
 mongoose.set("strictQuery", false);
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log(err));
-
+  
+// socket.io
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
@@ -27,17 +30,9 @@ const io = socketIo(server, {
   }
 });
 
-// endpoints
-app.get('/messages', async (req, res) => {
-  try {
-    const messages = await Message.find();
-    res.json(messages);
-  } catch (error) {
-    res.status(500).json({ error: 'Error fetching messages' });
-  }
-})
+// messages router
+app.use('/messages', messagesRouter);
 
-// socket.io
 io.on('connection', (socket) => {
   console.log('(backend) A user connected:', socket.id);
 
