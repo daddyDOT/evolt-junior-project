@@ -3,7 +3,8 @@ const http = require('http');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const socketIo = require('socket.io');
-const messagesRouter = require('./routes/getMessages');
+const messagesRouter = require('./routes/messages');
+const { router: usersRouter } = require('./routes/users');
 const Message = require('./models/messageModel');
 
 require('dotenv').config();
@@ -30,8 +31,9 @@ const io = socketIo(server, {
   }
 });
 
-// messages router
+// routers
 app.use('/messages', messagesRouter);
+app.use('/users', usersRouter);
 
 io.on('connection', (socket) => {
   console.log('(backend) A user connected:', socket.id);
