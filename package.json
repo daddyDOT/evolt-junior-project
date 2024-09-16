@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "dev": "node server.js"
+  },
   "dependencies": {
     "http": "^0.0.1-security",
     "http-proxy-middleware": "^3.0.2",
