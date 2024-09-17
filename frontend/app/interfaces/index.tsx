@@ -1,4 +1,4 @@
 import { Message } from "./Message";
-import { Name } from "./Name";
+import { User } from "./User";
 
-export type { Message, Name };
+export type { Message, User };
