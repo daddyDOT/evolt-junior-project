@@ -1,20 +1,26 @@
 import { io, Socket } from "socket.io-client";
-import { User } from "../interfaces";
+import { Message, User } from "../interfaces";
 
 interface SocketSetupParams {
   setSocket: (socket: Socket) => void;
-  updateMessages: ( { _id, user, message } : { _id: string, user: User, message: string } ) => void;
+  updateMessages: ( { _id, user, message } : Message ) => void;
   setUser: (user: User) => void;
   setOnlineUsers: (users: User[]) => void;
 }
 
-export const setupSocket = ({ setSocket, updateMessages, setUser, setOnlineUsers }: SocketSetupParams) => {
+export const setupSocket = ({
+    setSocket,
+    updateMessages,
+    setUser,
+    setOnlineUsers
+  }: SocketSetupParams) => {
+
   const socketIo = io("http://localhost:5000");
   setSocket(socketIo);
 
   socketIo.on("message", (data : { message: string, _id: string, user: User }) => {
     alert("New message");
-    updateMessages(data);
+    updateMessages({ ...data, createdAt: Date.now().toString() });
   });
 
   socketIo.on("send-socket-id", (data) => {

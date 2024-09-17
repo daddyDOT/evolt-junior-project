@@ -5,25 +5,42 @@ import { Socket } from "socket.io-client";
 import { getMessages } from "./actions/getMessages";
 import { Message, User } from "./interfaces";
 import { setupSocket } from "./actions/setupSocket";
+import Messages from "./components/Messages";
 
 const Home = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<string>("");
-  const [user, setUser] = useState<User>({ username: "", avatar: "" });
+  const [user, setUser] = useState<User>({ username: "", avatar: "", socketId: "" });
   const [onlineUsers, setOnlineUsers] = useState<User[]>([]);
 
   const sendMessage = () => {
-    socket?.emit("message", { user, message});
-    setMessage("");
+    socket?.emit("message", {
+      user,
+      message
+    }, () => setMessage(""))
   }
 
-  const updateMessages = ({ _id, user, message } : { _id: string, user: User, message: string}) => {
-    setMessages((prev) => [...prev, { _id, user, message, createdAt: Date.now().toString() }]);
+  const updateMessages = ({ _id, user, message, createdAt } : Message) => {
+    setMessages((prev) => [
+      ...prev,
+      {
+        _id,
+        user,
+        message,
+        createdAt
+      }
+    ]);
   }
 
   useEffect(() => {
-    const socketIo = setupSocket({ setSocket, updateMessages, setUser, setOnlineUsers });
+    const socketIo = setupSocket({
+      setSocket,
+      updateMessages,
+      setUser,
+      setOnlineUsers
+    });
+
     setSocket(socketIo);
 
     return () => {
@@ -52,10 +69,7 @@ const Home = () => {
         Send
       </button>
       <hr />
-      {messages.map((item) => (
-          <p key={item._id}>{item.user.username} - {item.message}</p>
-        )
-      )}
+      <Messages messages={messages} />
       <hr />
       <h2>Online Users</h2>
       {onlineUsers.map((item : User) => (
