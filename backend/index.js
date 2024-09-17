@@ -4,7 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const socketIo = require('socket.io');
 const messagesRouter = require('./routes/messages');
-const { router: usersRouter, isUserOnline, addUserToOnlineUsers, removeOnlineUser } = require('./routes/users');
+const users = require('./utils/users');
 const Message = require('./models/messageModel');
 
 require('dotenv').config();
@@ -33,7 +33,6 @@ const io = socketIo(server, {
 
 // routers
 app.use('/messages', messagesRouter);
-app.use('/users', usersRouter);
 
 io.on('connection', (socket) => {
 
@@ -51,7 +50,7 @@ io.on('connection', (socket) => {
   }
 
   // add user to the list of online users
-  const onlineUsers = addUserToOnlineUsers({ ...user, socketId: socket.id });
+  const onlineUsers = users.add({ ...user, socketId: socket.id });
 
   // send user info to the client
   socket.emit('send-socket-id', { user, onlineUsers });
@@ -76,10 +75,10 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log('(backend) User disconnected:', socket.id);
-    const users = removeOnlineUser(socket.id);
+    const online = users.remove(socket.id);
 
     // send user info to the client
-    socket.broadcast.emit('remove-socket-id', { onlineUsers: users });
+    socket.broadcast.emit('remove-socket-id', { onlineUsers: online });
   });
 });
 
