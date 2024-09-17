@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { getMessages } from "./actions/getMessages";
-import { getRandomName } from "./actions/getRandomName";
-import { Message, Name } from "./interfaces";
+import { Message, User } from "./interfaces";
 
 const Home = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<string>("");
-  const [user, setUser] = useState<Name>({ username: "", name: "" });
+  const [user, setUser] = useState<User>({ username: "", avatar: "" });
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
   const sendMessage = () => {
     socket?.emit("message", { user, message});
@@ -26,7 +26,23 @@ const Home = () => {
     setSocket(socketIo);
 
     socketIo.on("message", (data) => {
+      alert("New message");
       updateMessages({...data, createdAt: Date.now().toString()});
+    });
+
+    socketIo.on("send-socket-id", (data) => {
+      setUser(data.user);
+      setOnlineUsers(data.onlineUsers);
+    });
+
+    socketIo.on("user-connected", (data) => {
+      alert(`User ${data.user.username} connected`);
+      setOnlineUsers(data.onlineUsers);
+    });
+
+    socketIo.on("remove-socket-id", (data) => {
+      alert("User disconnected");
+      setOnlineUsers(data.onlineUsers);
     });
 
     return () => {
@@ -35,14 +51,12 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await getMessages();
-      const user = await getRandomName();
-      setMessages(data);
-      setUser(user);
+    const fetchMessages = async () => {
+      const response = await getMessages();
+      setMessages(response);
     }
 
-    fetchData();
+    fetchMessages();
   }, []);
 
   return (
@@ -57,13 +71,15 @@ const Home = () => {
         Send
       </button>
       <hr />
-      {messages.map((item) => 
-      {
-        console.log("item", item);
-        return (
-          <p key={item._id}>{item.user.name} - {item.message}</p>
+      {messages.map((item) => (
+          <p key={item._id}>{item.user.username} - {item.message}</p>
         )
-      })}
+      )}
+      <hr />
+      <h2>Online Users</h2>
+      {onlineUsers.map((item : User) => (
+        <p key={item.socketId}>{item.username}</p>
+      ))}
     </div>
   );
 }
