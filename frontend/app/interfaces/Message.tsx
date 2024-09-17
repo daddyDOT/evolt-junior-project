@@ -1,6 +1,8 @@
+import { User } from "./User";
+
 export interface Message {
     _id: string;
-    user: { username: string, name: string };
+    user: User;
     message: string;
     createdAt: string;
 }
