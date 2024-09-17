@@ -4,7 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const socketIo = require('socket.io');
 const messagesRouter = require('./routes/messages');
-const { router: usersRouter } = require('./routes/users');
+const { router: usersRouter, isUserOnline, addUserToOnlineUsers, removeOnlineUser } = require('./routes/users');
 const Message = require('./models/messageModel');
 
 require('dotenv').config();
@@ -36,7 +36,28 @@ app.use('/messages', messagesRouter);
 app.use('/users', usersRouter);
 
 io.on('connection', (socket) => {
-  console.log('(backend) A user connected:', socket.id);
+
+  console.log('(backend) User connected with Socket ID:', socket.id);
+
+  socket.on('join', ({ name, room }, callback) => {
+    console.log(name, room);
+  });
+
+  // generate random user info
+  const user = {
+    username: `User${Math.floor(Math.random() * 1000)}`,
+    avatar: `https://api.dicebear.com/9.x/thumbs/svg?seed=${Math.floor(Math.random() * 1000)}`,
+    socketId: socket.id
+  }
+
+  // add user to the list of online users
+  const onlineUsers = addUserToOnlineUsers({ ...user, socketId: socket.id });
+
+  // send user info to the client
+  socket.emit('send-socket-id', { user, onlineUsers });
+  
+  // using broadcast to inform all other users
+  socket.broadcast.emit('user-connected', { user, onlineUsers });
 
   socket.on('message', async (data) => {
     const newMessage = new Message({...data})
@@ -55,6 +76,10 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log('(backend) User disconnected:', socket.id);
+    const users = removeOnlineUser(socket.id);
+
+    // send user info to the client
+    socket.broadcast.emit('remove-socket-id', { onlineUsers: users });
   });
 });
 
