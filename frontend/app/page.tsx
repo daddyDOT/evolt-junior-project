@@ -30,13 +30,13 @@ const Home = () => {
 
   const updateMessages = ({ _id, user, message, createdAt } : Message) => {
     setMessages((prev) => [
-      ...prev,
       {
         _id,
         user,
         message,
         createdAt
-      }
+      },
+      ...prev
     ]);
   }
 
