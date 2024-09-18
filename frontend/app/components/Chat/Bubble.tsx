@@ -9,12 +9,13 @@ const Bubble = (message : Message) => {
         radius="full"
         width={40}
         height={40}
+        className='flex-none'
         alt="avatar"
       />
       <div className="flex flex-col">
         <span className="text-default-700">{message.user.username}</span>
         <span className="text-default-300 text-xs">{message.user.socketId}</span>
-        <span className="text-default-700 mt-2">{message.message}</span>
+        <span className="text-default-700 mt-2 max-w-[800px]">{message.message}</span>
       </div>
     </div>
   )
