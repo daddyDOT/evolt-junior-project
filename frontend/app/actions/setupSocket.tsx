@@ -21,7 +21,6 @@ export const setupSocket = ({
   setSocket(socketIo);
 
   socketIo.on("message", (data : { message: string, _id: string, user: User }) => {
-    alert("New message");
     updateMessages({ ...data, createdAt: Date.now().toString() });
   });
 
