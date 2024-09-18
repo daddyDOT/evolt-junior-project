@@ -5,7 +5,10 @@ import { Socket } from "socket.io-client";
 import { getMessages } from "./actions/getMessages";
 import { Message, User } from "./interfaces";
 import { setupSocket } from "./actions/setupSocket";
-import Messages from "./components/Messages";
+import { Button, Image, Input } from "@nextui-org/react";
+import { SendIcon } from "./components/icons";
+import Logo from "./components/Logo";
+import * as Chat from "./components/Chat";
 
 const Home = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -14,11 +17,15 @@ const Home = () => {
   const [user, setUser] = useState<User>({ username: "", avatar: "", socketId: "" });
   const [onlineUsers, setOnlineUsers] = useState<User[]>([]);
 
-  const sendMessage = () => {
+  const sendMessage = (ev: React.FormEvent<HTMLFormElement>) => {
+    ev.preventDefault();
+
+    if (!message) return;
     socket?.emit("message", {
       user,
       message
-    }, () => setMessage(""))
+    });
+    setMessage("");
   }
 
   const updateMessages = ({ _id, user, message, createdAt } : Message) => {
@@ -58,23 +65,72 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
-      <h1>Frontend initial commit...</h1>
-      <input
-        placeholder="Write a message..."
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-      />
-      <button type="button" onClick={sendMessage}>
-        Send
-      </button>
-      <hr />
-      <Messages messages={messages} />
-      <hr />
-      <h2>Online Users</h2>
-      {onlineUsers.map((item : User) => (
-        <p key={item.socketId}>{item.username}</p>
-      ))}
+    <div className="w-full h-full p-8 flex gap-8">
+      <div className="w-[200px] flex flex-col gap-[5rem] h-full">
+        <Logo />
+
+        <div className="flex flex-col gap-3">
+          <h2 className="text-sm text-default-800">Rooms</h2>
+          <Button
+            color="default"
+            className="flex items-center gap-2 bg-default-100"
+          >
+            <span>Glavni razgovor</span>
+          </Button>
+        </div>
+
+        <div className="flex flex-col gap-3">
+          <h2 className="text-sm text-default-800">Online users</h2>
+          {onlineUsers.map((item : User) => (
+            <Button
+              key={item.socketId}
+              color="default"
+              className="flex items-center gap-2 bg-default-100"
+              startContent={
+                <Image src={item.avatar} alt="user-photo" className="w-[20px] h-[20px]" />
+              }
+            >
+              <span>{item.username}</span>
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      <Chat.Base
+        heading="General chat"
+        description="Open to everyone, only halal talk allowed"
+      >
+        <Chat.Messages>
+          {messages.map((item) => (
+            <Chat.Bubble key={item._id} {...item} />
+          ))}
+        </Chat.Messages>
+        <form className="flex justify-between items-center gap-4" onSubmit={sendMessage}>
+          <Input
+            placeholder="Write a message..."
+            value={message}
+            variant="bordered"
+            size="lg"
+            radius="full"
+            onChange={(e) => setMessage(e.target.value)}
+            className="w-full"
+            classNames={{
+              inputWrapper: "border-[1px]",
+              innerWrapper: "text-default-900"
+            }}
+          />
+          <Button
+            type="submit"
+            variant="solid"
+            isIconOnly
+            size="lg"
+            radius="full"
+            className=""
+          >
+            <SendIcon className="text-primary-900 text-xs" />
+          </Button>
+        </form>
+      </Chat.Base>
     </div>
   );
 }
