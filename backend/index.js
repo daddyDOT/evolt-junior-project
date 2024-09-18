@@ -24,11 +24,11 @@ mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true })
   
 // socket.io
 const server = http.createServer(app);
-const io = socketIo(server, {
-  cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"]
-  }
+const io = new socketIo.Server(server, {
+    cors: {
+        origin: '*',
+        methods: ["GET", "POST"]
+    }
 });
 
 // routers
@@ -86,4 +86,5 @@ const port = process.env.PORT || 5000;
 
 server.listen(port, () => {
   console.log(`Backend server running on http://localhost:${port}`);
+  console.log(`Listening to frontend on ${process.env.CLIENT_URL}`);
 });
