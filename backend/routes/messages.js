@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
     try {
-      const messages = await Message.find();
+      const messages = await Message.find().sort({ createdAt: -1 });
       res.json(messages);
     } catch (error) {
       res.status(500).json({ error: 'Error fetching messages' });
