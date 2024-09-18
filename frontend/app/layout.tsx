@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Providers>
-          <main className="dark">
+          <main className="dark bg-default-50 h-[100vh] h-max-[100vh] overflow-hidden">
             {children}
           </main>
         </Providers>
