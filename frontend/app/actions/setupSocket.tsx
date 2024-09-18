@@ -1,6 +1,7 @@
 import { io, Socket } from "socket.io-client";
 import { Message, User } from "../interfaces";
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 interface SocketSetupParams {
   setSocket: (socket: Socket) => void;
   updateMessages: ( { _id, user, message } : Message ) => void;
@@ -15,7 +16,7 @@ export const setupSocket = ({
     setOnlineUsers
   }: SocketSetupParams) => {
 
-  const socketIo = io("http://localhost:5000");
+  const socketIo = io(`${apiUrl}`);
   setSocket(socketIo);
 
   socketIo.on("message", (data : { message: string, _id: string, user: User }) => {
