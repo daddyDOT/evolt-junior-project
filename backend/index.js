@@ -78,7 +78,7 @@ io.on('connection', (socket) => {
     const online = users.remove(socket.id);
 
     // send user info to the client
-    socket.broadcast.emit('remove-socket-id', { onlineUsers: online });
+    socket.broadcast.emit('remove-socket-id', { onlineUsers: online, user: user.username });
   });
 });
 
