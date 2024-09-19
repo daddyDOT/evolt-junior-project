@@ -6,7 +6,7 @@ import { getMessages } from "./actions/getMessages";
 import { Message, User } from "./interfaces";
 import { setupSocket } from "./actions/setupSocket";
 import { Button, Image, Input } from "@nextui-org/react";
-import { SendIcon } from "./components/icons";
+import { NotificationIcon, SendIcon } from "./components/icons";
 import Logo from "./components/Logo";
 import * as Chat from "./components/Chat";
 
@@ -68,6 +68,18 @@ const Home = () => {
     <div className="w-full h-full p-8 flex gap-8">
       <div className="w-[200px] flex flex-col gap-[5rem] h-full">
         <Logo />
+
+        <div className="flex flex-col gap-3">
+          <h2 className="text-sm text-default-800">Your account</h2>
+          <div className="flex items-center justify-between">
+            <Chat.Profile
+              user={user}
+              tooltip
+              className="items-center"
+            />
+            <NotificationIcon className="text-primary-900 text-xs" />
+          </div>
+        </div>
 
         <div className="flex flex-col gap-3">
           <h2 className="text-sm text-default-800">Rooms</h2>
