@@ -71,6 +71,7 @@ io.on('connection', (socket) => {
     }
 
     io.emit('message', {message: data.message, _id: newId, user: data.user});
+    socket.broadcast.emit('message-notify');
   });
 
   socket.on('disconnect', () => {
