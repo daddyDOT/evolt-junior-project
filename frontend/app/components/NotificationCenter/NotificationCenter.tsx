@@ -21,7 +21,7 @@ const NotificationCenter = () => {
   return (
     <Popover
       showArrow
-      placement="right-start"
+      placement="bottom"
       className="dark"
       classNames={{
         content: "items-stretch"
