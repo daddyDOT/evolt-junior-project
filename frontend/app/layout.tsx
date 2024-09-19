@@ -3,6 +3,7 @@ import "./globals.css";
 import 'react-toastify/dist/ReactToastify.css';
 import Providers from "./components/Providers";
 import { ToastContainer } from "react-toastify";
+import Header from "./components/Header/Header";
 
 export const metadata: Metadata = {
   title: "Messaging app",
@@ -19,6 +20,7 @@ export default function RootLayout({
       <body>
         <Providers>
           <main className="dark bg-default-50 h-[100vh] h-max-[100vh] overflow-hidden">
+            <Header />
             {children}
 
             <ToastContainer

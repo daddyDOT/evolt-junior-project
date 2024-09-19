@@ -77,8 +77,8 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="w-full h-full p-8 flex gap-8">
-      <div className="w-[200px] flex flex-col gap-[5rem] h-full">
+    <div className="w-full h-full overflow-hidden md:h-full md:p-8 flex flex-col md:flex-row gap-2 md:gap-8">
+      <div className="hidden md:flex flex-col gap-[5rem] w-[200px] h-full">
         <Logo />
 
         <div className="flex flex-col gap-3">
