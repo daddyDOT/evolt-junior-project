@@ -1,22 +1,25 @@
 'use client'
 
 import { useEffect, useRef, useState } from "react";
-import { Socket } from "socket.io-client";
 import { getMessages } from "./actions/getMessages";
 import { Message, User } from "./interfaces";
 import { setupSocket } from "./actions/setupSocket";
 import { Button, Image, Input } from "@nextui-org/react";
+import { useSocketContext } from "./contexts/SocketContext";
 import { SendIcon } from "./components/icons";
+import { NotificationCenter } from "./components/NotificationCenter";
 import Logo from "./components/Logo";
 import * as Chat from "./components/Chat";
-import { NotificationCenter } from "./components/NotificationCenter";
 
 const Home = () => {
-  const [socket, setSocket] = useState<Socket | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const {
+    socket, setSocket,
+    messages, setMessages,
+    user, setUser,
+    onlineUsers, setOnlineUsers
+  } = useSocketContext();
+
   const [message, setMessage] = useState<string>("");
-  const [user, setUser] = useState<User>({ username: "", avatar: "", socketId: "" });
-  const [onlineUsers, setOnlineUsers] = useState<User[]>([]);
 
   const audioPlayer = useRef<HTMLAudioElement>(null);
 
