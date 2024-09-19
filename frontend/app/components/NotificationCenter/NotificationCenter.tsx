@@ -17,8 +17,6 @@ const NotificationCenter = () => {
     remove,
     unreadCount
   } = useNotificationCenter();
-  
-  console.log(notifications);
 
   return (
     <Popover
@@ -46,7 +44,16 @@ const NotificationCenter = () => {
             <span className="text-default-700 text-lg">Notifications</span>
             Unread notifications: {unreadCount}
           </div>
-          <Button size="sm" onClick={() => { markAllAsRead(); clear(); }}>Mark all as read</Button>
+          <Button
+            size="sm"
+            onClick={() => {
+              markAllAsRead();
+              clear();
+            }}
+            disabled={notifications.length === 0}
+          >
+            Mark all as read
+          </Button>
         </div>
 
         {notifications.length === 0 ? (
