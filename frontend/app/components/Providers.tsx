@@ -1,16 +1,15 @@
+import React from 'react';
 import { NextUIProvider } from '@nextui-org/react';
-import { ReactNode } from 'react';
+import { SocketProvider } from '../contexts/SocketContext';
 
-interface ProvidersProps {
-  children: ReactNode;
-}
+const Providers = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <NextUIProvider>
+      <SocketProvider>
+        {children}
+      </SocketProvider>
+    </NextUIProvider>
+  );
+};
 
-const Providers = ({ children }: ProvidersProps) => {
-    return (
-        <NextUIProvider>
-            {children}
-        </NextUIProvider>
-    )
-}
-
-export default Providers
+export default Providers;
