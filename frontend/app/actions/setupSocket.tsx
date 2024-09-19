@@ -9,13 +9,15 @@ interface SocketSetupParams {
   updateMessages: ( { _id, user, message } : Message ) => void;
   setUser: (user: User) => void;
   setOnlineUsers: (users: User[]) => void;
+  playSound: () => void;
 }
 
 export const setupSocket = ({
     setSocket,
     updateMessages,
     setUser,
-    setOnlineUsers
+    setOnlineUsers,
+    playSound
   }: SocketSetupParams) => {
 
   const socketIo = io(apiUrl || "http://localhost:5000");
@@ -24,6 +26,8 @@ export const setupSocket = ({
   socketIo.on("message", (data : { message: string, _id: string, user: User }) => {
     updateMessages({ ...data, createdAt: Date.now().toString() });
   });
+
+  socketIo.on("message-notify", () => playSound);
 
   socketIo.on("send-socket-id", (data) => {
     setUser(data.user);

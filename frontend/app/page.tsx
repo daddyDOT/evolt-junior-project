@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 import { getMessages } from "./actions/getMessages";
 import { Message, User } from "./interfaces";
@@ -17,6 +17,16 @@ const Home = () => {
   const [message, setMessage] = useState<string>("");
   const [user, setUser] = useState<User>({ username: "", avatar: "", socketId: "" });
   const [onlineUsers, setOnlineUsers] = useState<User[]>([]);
+
+  const audioPlayer = useRef<HTMLAudioElement>(null);
+
+  const playSound = () => {
+    if (audioPlayer.current) {
+      audioPlayer.current.play()
+    } else {
+      console.error("Audio player not found");
+    }
+  }
 
   const sendMessage = (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
@@ -46,7 +56,8 @@ const Home = () => {
       setSocket,
       updateMessages,
       setUser,
-      setOnlineUsers
+      setOnlineUsers,
+      playSound
     });
 
     setSocket(socketIo);
@@ -144,6 +155,7 @@ const Home = () => {
           </Button>
         </form>
       </Chat.Base>
+      <audio ref={audioPlayer} src='./notification.mp3' />
     </div>
   );
 }
