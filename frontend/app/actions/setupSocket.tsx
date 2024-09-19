@@ -1,5 +1,6 @@
 import { io, Socket } from "socket.io-client";
 import { Message, User } from "../interfaces";
+import { toast } from "react-toastify";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -30,12 +31,12 @@ export const setupSocket = ({
   });
 
   socketIo.on("user-connected", (data) => {
-    alert(`User ${data.user.username} connected`);
+    toast.info(`User ${data.user.username} connected`);
     setOnlineUsers(data.onlineUsers);
   });
 
   socketIo.on("remove-socket-id", (data) => {
-    alert("User disconnected");
+    toast.info(`User ${data.user} disconnected`);
     setOnlineUsers(data.onlineUsers);
   });
 
