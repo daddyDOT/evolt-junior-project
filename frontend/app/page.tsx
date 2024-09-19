@@ -6,9 +6,10 @@ import { getMessages } from "./actions/getMessages";
 import { Message, User } from "./interfaces";
 import { setupSocket } from "./actions/setupSocket";
 import { Button, Image, Input } from "@nextui-org/react";
-import { NotificationIcon, SendIcon } from "./components/icons";
+import { SendIcon } from "./components/icons";
 import Logo from "./components/Logo";
 import * as Chat from "./components/Chat";
+import { NotificationCenter } from "./components/NotificationCenter";
 
 const Home = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -77,7 +78,7 @@ const Home = () => {
               tooltip
               className="items-center"
             />
-            <NotificationIcon className="text-primary-900 text-xs" />
+            <NotificationCenter />
           </div>
         </div>
 
