@@ -1,21 +1,35 @@
 'use client'
 
-import { useEffect, useState } from "react";
-import { Socket } from "socket.io-client";
+import { useEffect, useRef, useState } from "react";
 import { getMessages } from "./actions/getMessages";
 import { Message, User } from "./interfaces";
 import { setupSocket } from "./actions/setupSocket";
-import { Button, Image, Input } from "@nextui-org/react";
+import { Button, Image, Input, ScrollShadow } from "@nextui-org/react";
+import { useSocketContext } from "./contexts/SocketContext";
 import { SendIcon } from "./components/icons";
+import { NotificationCenter } from "./components/NotificationCenter";
 import Logo from "./components/Logo";
 import * as Chat from "./components/Chat";
 
 const Home = () => {
-  const [socket, setSocket] = useState<Socket | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const {
+    socket, setSocket,
+    messages, setMessages,
+    user, setUser,
+    onlineUsers, setOnlineUsers
+  } = useSocketContext();
+
   const [message, setMessage] = useState<string>("");
-  const [user, setUser] = useState<User>({ username: "", avatar: "", socketId: "" });
-  const [onlineUsers, setOnlineUsers] = useState<User[]>([]);
+
+  const audioPlayer = useRef<HTMLAudioElement>(null);
+
+  const playSound = () => {
+    if (audioPlayer.current) {
+      audioPlayer.current.play()
+    } else {
+      console.error("Audio player not found");
+    }
+  }
 
   const sendMessage = (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
@@ -45,7 +59,8 @@ const Home = () => {
       setSocket,
       updateMessages,
       setUser,
-      setOnlineUsers
+      setOnlineUsers,
+      playSound
     });
 
     setSocket(socketIo);
@@ -65,9 +80,21 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="w-full h-full p-8 flex gap-8">
-      <div className="w-[200px] flex flex-col gap-[5rem] h-full">
+    <div className="w-full h-full overflow-hidden md:h-full md:p-8 flex flex-col md:flex-row gap-2 md:gap-8">
+      <div className="hidden md:flex flex-col gap-[2rem] w-[200px] h-full">
         <Logo />
+
+        <div className="flex flex-col gap-3">
+          <h2 className="text-sm text-default-800">Your account</h2>
+          <div className="flex items-center justify-between">
+            <Chat.Profile
+              user={user}
+              tooltip
+              className="items-center"
+            />
+            <NotificationCenter />
+          </div>
+        </div>
 
         <div className="flex flex-col gap-3">
           <h2 className="text-sm text-default-800">Rooms</h2>
@@ -79,20 +106,22 @@ const Home = () => {
           </Button>
         </div>
 
-        <div className="flex flex-col gap-3">
-          <h2 className="text-sm text-default-800">Online users</h2>
-          {onlineUsers.map((item : User) => (
-            <Button
-              key={item.socketId}
-              color="default"
-              className="flex items-center gap-2 bg-default-100"
-              startContent={
-                <Image src={item.avatar} alt="user-photo" className="w-[20px] h-[20px]" />
-              }
-            >
-              <span>{item.username}</span>
-            </Button>
-          ))}
+        <div className="contents">
+          <h2 className="text-sm text-default-800 -mb-[2rem]">Online users</h2>
+          <ScrollShadow hideScrollBar>
+            {onlineUsers.map((item : User) => (
+              <Button
+                key={item.socketId}
+                color="default"
+                className="flex items-center gap-2 bg-default-100 w-full my-3"
+                startContent={
+                  <Image src={item.avatar} alt="user-photo" className="w-[20px] h-[20px]" />
+                }
+              >
+                <span>{item.username}</span>
+              </Button>
+            ))}
+          </ScrollShadow>
         </div>
       </div>
 
@@ -131,6 +160,7 @@ const Home = () => {
           </Button>
         </form>
       </Chat.Base>
+      <audio ref={audioPlayer} src='./notification.mp3' />
     </div>
   );
 }

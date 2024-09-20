@@ -71,6 +71,7 @@ io.on('connection', (socket) => {
     }
 
     io.emit('message', {message: data.message, _id: newId, user: data.user});
+    socket.broadcast.emit('message-notify');
   });
 
   socket.on('disconnect', () => {
@@ -78,7 +79,7 @@ io.on('connection', (socket) => {
     const online = users.remove(socket.id);
 
     // send user info to the client
-    socket.broadcast.emit('remove-socket-id', { onlineUsers: online });
+    socket.broadcast.emit('remove-socket-id', { onlineUsers: online, user: user.username });
   });
 });
 

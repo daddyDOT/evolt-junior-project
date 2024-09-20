@@ -1,5 +1,6 @@
 import { io, Socket } from "socket.io-client";
 import { Message, User } from "../interfaces";
+import { toast } from "react-toastify";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -8,13 +9,15 @@ interface SocketSetupParams {
   updateMessages: ( { _id, user, message } : Message ) => void;
   setUser: (user: User) => void;
   setOnlineUsers: (users: User[]) => void;
+  playSound: () => void;
 }
 
 export const setupSocket = ({
     setSocket,
     updateMessages,
     setUser,
-    setOnlineUsers
+    setOnlineUsers,
+    playSound
   }: SocketSetupParams) => {
 
   const socketIo = io(apiUrl || "http://localhost:5000");
@@ -24,18 +27,20 @@ export const setupSocket = ({
     updateMessages({ ...data, createdAt: Date.now().toString() });
   });
 
+  socketIo.on("message-notify", () => playSound);
+
   socketIo.on("send-socket-id", (data) => {
     setUser(data.user);
     setOnlineUsers(data.onlineUsers);
   });
 
   socketIo.on("user-connected", (data) => {
-    alert(`User ${data.user.username} connected`);
+    toast.info(`${data.user.username} connected`);
     setOnlineUsers(data.onlineUsers);
   });
 
   socketIo.on("remove-socket-id", (data) => {
-    alert("User disconnected");
+    toast.info(`User ${data.user} disconnected`);
     setOnlineUsers(data.onlineUsers);
   });
 
