@@ -19,7 +19,8 @@ const NotificationCenter = () => {
   } = useNotificationCenter();
 
   return (
-    <Popover
+    <div>
+      <Popover
       showArrow
       placement="bottom"
       className="dark"
@@ -69,28 +70,28 @@ const NotificationCenter = () => {
               variant="flat"
             >
               {(item : NotificationCenterItem) => (
-                <ListboxItem key={item.id} className="flex gap-2 items-center justify-between" >
-                  <div className="flex flex-col">
-                    <span className="text-small">{item.title}</span>
+                <ListboxItem key={item.id} textValue=" " >
+                  <div className="w-full flex items-center justify-between">
                     <span className="text-tiny text-default-400">{item.content?.toString()}</span>
+                    <Button
+                      size="sm"
+                      variant="light"
+                      isIconOnly
+                      onClick={() => {
+                        markAsRead(item.id);
+                        remove(item.id);
+                      }}
+                    >
+                      <TrashIcon className="text-primary-900 text-xs" />
+                    </Button>
                   </div>
-                  <Button
-                    size="sm"
-                    variant="light"
-                    isIconOnly
-                    onClick={() => {
-                      markAsRead(item.id);
-                      remove(item.id);
-                    }}
-                  >
-                    <TrashIcon className="text-primary-900 text-xs" />
-                  </Button>
                 </ListboxItem>
               )}
           </Listbox>
         )}
       </PopoverContent>
     </Popover>
+    </div>
   )
 }
 
