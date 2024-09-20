@@ -35,7 +35,7 @@ export const setupSocket = ({
   });
 
   socketIo.on("user-connected", (data) => {
-    toast.info(`User ${data.user.username} connected`);
+    toast.info(`${data.user.username} connected`);
     setOnlineUsers(data.onlineUsers);
   });
 
