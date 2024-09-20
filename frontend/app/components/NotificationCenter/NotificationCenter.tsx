@@ -6,7 +6,7 @@ interface NotificationCenterItem extends OriginalNotificationCenterItem {
 }
 
 import { NotificationIcon, TrashIcon } from "../icons";
-import { Button, Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";
+import { Button, Listbox, ListboxItem, Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";
 
 const NotificationCenter = () => {
   const {
@@ -59,28 +59,35 @@ const NotificationCenter = () => {
         {notifications.length === 0 ? (
           <div className="text-default-400 text-xs text-center my-3">No notifications</div>
         ) : (
-          notifications.map((notification: NotificationCenterItem) => (
-            <div
-              key={notification.id}
-              className="flex items-center justify-between py-1 gap-3"
+            <Listbox
+              classNames={{
+                base: "mr-2",
+                list: "max-h-[300px] overflow-auto overflow-y-scroll",
+              }}
+              items={notifications}
+              label="Assigned to"
+              variant="flat"
             >
-              <div className="flex items-center">
-                {notification.title && <div className="text-default-900 text-xs pr-2">{notification.title}</div>}
-                <div className="text-default-300 text-xs">{String(notification.content)}</div>
-              </div>
-              <Button
-                size="sm"
-                variant="light"
-                isIconOnly
-                onClick={() => {
-                  markAsRead(notification.id);
-                  remove(notification.id);
-                }}
-              >
-                <TrashIcon className="text-primary-900 text-xs" />
-              </Button>
-            </div>
-          ))
+              {(item : NotificationCenterItem) => (
+                <ListboxItem key={item.id} className="flex gap-2 items-center justify-between" >
+                  <div className="flex flex-col">
+                    <span className="text-small">{item.title}</span>
+                    <span className="text-tiny text-default-400">{item.content?.toString()}</span>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="light"
+                    isIconOnly
+                    onClick={() => {
+                      markAsRead(item.id);
+                      remove(item.id);
+                    }}
+                  >
+                    <TrashIcon className="text-primary-900 text-xs" />
+                  </Button>
+                </ListboxItem>
+              )}
+          </Listbox>
         )}
       </PopoverContent>
     </Popover>
