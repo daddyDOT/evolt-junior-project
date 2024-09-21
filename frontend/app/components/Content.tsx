@@ -2,18 +2,10 @@ import { useEffect, useState } from "react";
 import { useInView } from 'react-intersection-observer'
 import { Button, Input } from "@nextui-org/react";
 import { useSocketContext } from "../contexts/SocketContext";
-import { Message } from "../interfaces";
+import { MessageList, UpdatedMessages } from "../interfaces";
 import { SendIcon } from "./icons";
 import { toast } from "react-toastify";
 import * as Chat from "./Chat";
-
-interface MessagesInterface {
-  [key: string]: Message[];
-}
-
-interface updatedMessagesProps extends Message {
-  to?: string;
-}
 
 const Content = () => {
   const {
@@ -45,8 +37,8 @@ const Content = () => {
     setChatItem(activeChat[0] === "main" ? "main" : activeChat[0].split("User")[0]);
   }, [activeChat]);
 
-  const updateMessages = ({ _id, user, message, createdAt, to } : updatedMessagesProps) => {
-    setMessages((prevMessages : MessagesInterface) => {
+  const updateMessages = ({ _id, user, message, createdAt, to } : UpdatedMessages) => {
+    setMessages((prevMessages : MessageList) => {
       const updatedMessages = { ...prevMessages };
       if (!updatedMessages[to || 'main']) {
         updatedMessages[to || 'main'] = [];

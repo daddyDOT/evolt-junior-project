@@ -2,20 +2,12 @@
 
 import { useEffect, useRef } from "react";
 import { getMessages } from "./actions/getMessages";
-import { Message } from "./interfaces";
+import { Message, MessageList, UpdatedMessages } from "./interfaces";
 import { setupSocket } from "./actions/setupSocket";
 import { useSocketContext } from "./contexts/SocketContext";
 import Sidebar from "./components/Sidebar/Sidebar";
 import Content from "./components/Content";
 import { toast } from "react-toastify";
-
-interface MessagesInterface {
-  [key: string]: Message[];
-}
-
-interface updatedMessagesProps extends Message {
-  to?: string;
-}
 
 const Home = () => {
   const {
@@ -35,9 +27,9 @@ const Home = () => {
     }
   }
   
-  const updateMessages = ({ _id, user, message, createdAt, to } : updatedMessagesProps) => {
+  const updateMessages = ({ _id, user, message, createdAt, to } : UpdatedMessages) => {
 
-    setMessages((prevMessages : MessagesInterface) => {
+    setMessages((prevMessages : MessageList) => {
       const updatedMessages = { ...prevMessages };
       if (!updatedMessages[to || 'main']) {
         updatedMessages[to || 'main'] = [];
@@ -81,7 +73,7 @@ const Home = () => {
       const apiUrl = process.env.NODE_ENV == 'production' ? String(process.env.NEXT_PUBLIC_API_URL) : "http://localhost:5000";
 
       const response : Message[] = await getMessages(apiUrl);
-      setMessages((prevMessages : MessagesInterface) => {
+      setMessages((prevMessages : MessageList) => {
         const updatedMessages = { ...prevMessages };
         if (!updatedMessages['main']) {
           updatedMessages['main'] = [];
