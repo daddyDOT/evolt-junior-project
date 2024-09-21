@@ -4,9 +4,13 @@ import { toast } from "react-toastify";
 
 const apiUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_SOCKET_URL : undefined;
 
+interface updatedMessagesProps extends Message {
+  to?: string;
+}
+
 interface SocketSetupParams {
   setSocket: (socket: Socket) => void;
-  updateMessages: ( { _id, user, message } : Message ) => void;
+  updateMessages: ( { _id, user, message, to } : updatedMessagesProps ) => void;
   setUser: (user: User) => void;
   setOnlineUsers: (users: User[]) => void;
   playSound: () => void;
@@ -25,6 +29,10 @@ export const setupSocket = ({
 
   socketIo.on("message", (data : { message: string, _id: string, user: User }) => {
     updateMessages({ ...data, createdAt: Date.now().toString() });
+  });
+
+  socketIo.on("private message", (data : { message: string, user: User }) => {
+    updateMessages({ ...data, createdAt: Date.now().toString(), to: data.user.socketId });
   });
 
   socketIo.on("message-notify", () => playSound);
