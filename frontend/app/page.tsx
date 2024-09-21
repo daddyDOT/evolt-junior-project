@@ -1,9 +1,8 @@
 'use client'
 
 import { useEffect, useRef } from "react";
-import { getMessages } from "./actions/getMessages";
+import { getMessages, setupSocket } from "./actions";
 import { Message, MessageList, UpdatedMessages } from "./interfaces";
-import { setupSocket } from "./actions/setupSocket";
 import { useSocketContext } from "./contexts/SocketContext";
 import Sidebar from "./components/Sidebar/Sidebar";
 import Content from "./components/Content";
