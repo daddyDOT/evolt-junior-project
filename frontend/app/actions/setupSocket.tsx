@@ -2,7 +2,7 @@ import { io, Socket } from "socket.io-client";
 import { Message, User } from "../interfaces";
 import { toast } from "react-toastify";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const apiUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_SOCKET_URL : undefined;
 
 interface SocketSetupParams {
   setSocket: (socket: Socket) => void;

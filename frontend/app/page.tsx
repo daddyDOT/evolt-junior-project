@@ -72,7 +72,9 @@ const Home = () => {
 
   useEffect(() => {
     const fetchMessages = async () => {
-      const response = await getMessages();
+      const apiUrl = process.env.NODE_ENV == 'production' ? String(process.env.NEXT_PUBLIC_API_URL) : "http://localhost:5000";
+
+      const response = await getMessages(apiUrl);
       setMessages(response);
     }
 
