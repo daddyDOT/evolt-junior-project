@@ -2,21 +2,20 @@
 
 import { useEffect, useRef, useState } from "react";
 import { getMessages } from "./actions/getMessages";
-import { Message, User } from "./interfaces";
+import { Message } from "./interfaces";
 import { setupSocket } from "./actions/setupSocket";
-import { Button, Image, Input, ScrollShadow } from "@nextui-org/react";
+import { Button, Input } from "@nextui-org/react";
 import { useSocketContext } from "./contexts/SocketContext";
 import { SendIcon } from "./components/icons";
-import { NotificationCenter } from "./components/NotificationCenter";
-import Logo from "./components/Logo";
 import * as Chat from "./components/Chat";
+import Sidebar from "./components/Sidebar/Sidebar";
 
 const Home = () => {
   const {
     socket, setSocket,
     messages, setMessages,
     user, setUser,
-    onlineUsers, setOnlineUsers
+    setOnlineUsers
   } = useSocketContext();
 
   const [message, setMessage] = useState<string>("");
@@ -83,48 +82,8 @@ const Home = () => {
 
   return (
     <div className="w-full h-full overflow-hidden md:h-full md:p-8 flex flex-col md:flex-row gap-2 md:gap-8">
-      <div className="hidden md:flex flex-col gap-[2rem] w-[200px] h-full">
-        <Logo />
-
-        <div className="flex flex-col gap-3">
-          <h2 className="text-sm text-default-800">Your account</h2>
-          <div className="flex items-center justify-between">
-            <Chat.Profile
-              user={user}
-              tooltip
-              className="items-center"
-            />
-            <NotificationCenter />
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-3">
-          <h2 className="text-sm text-default-800">Rooms</h2>
-          <Button
-            color="default"
-            className="flex items-center gap-2 bg-default-100"
-          >
-            <span>Glavni razgovor</span>
-          </Button>
-        </div>
-
-        <div className="contents">
-          <h2 className="text-sm text-default-800 -mb-[2rem]">Online users</h2>
-          <ScrollShadow hideScrollBar>
-            {onlineUsers.map((item : User) => (
-              <Button
-                key={item.socketId}
-                color="default"
-                className="flex items-center gap-2 bg-default-100 w-full my-3"
-                startContent={
-                  <Image src={item.avatar} alt="user-photo" className="w-[20px] h-[20px]" />
-                }
-              >
-                <span>{item.username}</span>
-              </Button>
-            ))}
-          </ScrollShadow>
-        </div>
+      <div className="hidden md:block">
+        <Sidebar />
       </div>
 
       <Chat.Base
