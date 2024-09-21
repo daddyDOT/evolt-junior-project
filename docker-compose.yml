@@ -24,8 +24,9 @@ services:
     restart: always
     networks:
       - app-network
+    env_file:
+      - ./frontend/.env
     environment:
-      NEXT_PUBLIC_API_URL: http://backend:5000
       NODE_ENV: production
 
 networks:
