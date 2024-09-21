@@ -24,10 +24,10 @@ services:
     restart: always
     networks:
       - app-network
-    env_file:
-      - ./frontend/.env
     environment:
       NODE_ENV: production
+    depends_on:
+      - backend
 
 networks:
   app-network:
