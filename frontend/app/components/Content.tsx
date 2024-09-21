@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import { useInView } from 'react-intersection-observer'
 import { Button, Input } from "@nextui-org/react";
 import { useSocketContext } from "../contexts/SocketContext";
-import { SendIcon } from "./icons";
-import * as Chat from "./Chat";
-import { toast } from "react-toastify";
 import { Message } from "../interfaces";
+import { SendIcon } from "./icons";
+import { toast } from "react-toastify";
+import * as Chat from "./Chat";
 
 interface MessagesInterface {
   [key: string]: Message[];
@@ -25,11 +26,20 @@ const Content = () => {
 
   const [message, setMessage] = useState<string>("");
   const [chatItem, setChatItem] = useState<string>("main");
+  const [limit, setLimit] = useState<number>(10);
+
+  const { ref, inView } = useInView();
 
   const
     chatName = activeChat[0] === "main" ? "General chat" : ("User" + activeChat[0].split("User")[1]),
     privateChat = activeChat[0] !== "main";
   ;
+
+  useEffect(() => {
+    if (inView && limit < (messages[chatItem] || []).length) {
+      setLimit((prev) => prev + 10);
+    }
+  }, [inView])
 
   useEffect(() => {
     setChatItem(activeChat[0] === "main" ? "main" : activeChat[0].split("User")[0]);
@@ -87,9 +97,10 @@ const Content = () => {
       description={chatItem === "main" ? "Open to everyone, only halal talk allowed" : chatItem}
     >
       <Chat.Messages>
-        {(messages[chatItem] || []).map((item, index) => (
+        {(messages[chatItem] || []).slice(0, limit).map((item, index) => (
           <Chat.Bubble key={index} {...item} />
         ))}
+        <div ref={ref} />
       </Chat.Messages>
       <form className="flex justify-between items-center gap-4" onSubmit={sendMessage}>
         <Input
