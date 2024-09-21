@@ -1,25 +1,20 @@
 'use client'
 
-import { useEffect, useRef, useState } from "react";
-import { getMessages } from "./actions/getMessages";
-import { Message, User } from "./interfaces";
-import { setupSocket } from "./actions/setupSocket";
-import { Button, Image, Input, ScrollShadow } from "@nextui-org/react";
+import { useEffect, useRef } from "react";
+import { getMessages, setupSocket } from "./actions";
+import { Message, MessageList, UpdatedMessages } from "./interfaces";
 import { useSocketContext } from "./contexts/SocketContext";
-import { SendIcon } from "./components/icons";
-import { NotificationCenter } from "./components/NotificationCenter";
-import Logo from "./components/Logo";
-import * as Chat from "./components/Chat";
+import Sidebar from "./components/Sidebar/Sidebar";
+import Content from "./components/Content";
+import { toast } from "react-toastify";
 
 const Home = () => {
   const {
-    socket, setSocket,
-    messages, setMessages,
-    user, setUser,
-    onlineUsers, setOnlineUsers
+    setSocket,
+    setMessages,
+    setUser,
+    setOnlineUsers
   } = useSocketContext();
-
-  const [message, setMessage] = useState<string>("");
 
   const audioPlayer = useRef<HTMLAudioElement>(null);
 
@@ -30,28 +25,30 @@ const Home = () => {
       console.error("Audio player not found");
     }
   }
+  
+  const updateMessages = ({ _id, user, message, createdAt, to } : UpdatedMessages) => {
 
-  const sendMessage = (ev: React.FormEvent<HTMLFormElement>) => {
-    ev.preventDefault();
+    setMessages((prevMessages : MessageList) => {
+      const updatedMessages = { ...prevMessages };
+      if (!updatedMessages[to || 'main']) {
+        updatedMessages[to || 'main'] = [];
 
-    if (!message) return;
-    socket?.emit("message", {
-      user,
-      message
+        if (to) {
+          toast.info(`You received a new private message from: ${user.username}`);
+        }
+      }
+      updatedMessages[to || 'main'] = [
+        {
+          _id,
+          user,
+          message,
+          createdAt
+        },
+        ...updatedMessages[to || 'main']
+      ];
+
+      return updatedMessages;
     });
-    setMessage("");
-  }
-
-  const updateMessages = ({ _id, user, message, createdAt } : Message) => {
-    setMessages((prev) => [
-      {
-        _id,
-        user,
-        message,
-        createdAt
-      },
-      ...prev
-    ]);
   }
 
   useEffect(() => {
@@ -74,8 +71,15 @@ const Home = () => {
     const fetchMessages = async () => {
       const apiUrl = process.env.NODE_ENV == 'production' ? String(process.env.NEXT_PUBLIC_API_URL) : "http://localhost:5000";
 
-      const response = await getMessages(apiUrl);
-      setMessages(response);
+      const response : Message[] = await getMessages(apiUrl);
+      setMessages((prevMessages : MessageList) => {
+        const updatedMessages = { ...prevMessages };
+        if (!updatedMessages['main']) {
+          updatedMessages['main'] = [];
+        }
+        updatedMessages['main'].push(...response);
+        return updatedMessages;
+      });
     }
 
     fetchMessages();
@@ -83,85 +87,11 @@ const Home = () => {
 
   return (
     <div className="w-full h-full overflow-hidden md:h-full md:p-8 flex flex-col md:flex-row gap-2 md:gap-8">
-      <div className="hidden md:flex flex-col gap-[2rem] w-[200px] h-full">
-        <Logo />
-
-        <div className="flex flex-col gap-3">
-          <h2 className="text-sm text-default-800">Your account</h2>
-          <div className="flex items-center justify-between">
-            <Chat.Profile
-              user={user}
-              tooltip
-              className="items-center"
-            />
-            <NotificationCenter />
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-3">
-          <h2 className="text-sm text-default-800">Rooms</h2>
-          <Button
-            color="default"
-            className="flex items-center gap-2 bg-default-100"
-          >
-            <span>Glavni razgovor</span>
-          </Button>
-        </div>
-
-        <div className="contents">
-          <h2 className="text-sm text-default-800 -mb-[2rem]">Online users</h2>
-          <ScrollShadow hideScrollBar>
-            {onlineUsers.map((item : User) => (
-              <Button
-                key={item.socketId}
-                color="default"
-                className="flex items-center gap-2 bg-default-100 w-full my-3"
-                startContent={
-                  <Image src={item.avatar} alt="user-photo" className="w-[20px] h-[20px]" />
-                }
-              >
-                <span>{item.username}</span>
-              </Button>
-            ))}
-          </ScrollShadow>
-        </div>
+      <div className="hidden md:block">
+        <Sidebar />
       </div>
 
-      <Chat.Base
-        heading="General chat"
-        description="Open to everyone, only halal talk allowed"
-      >
-        <Chat.Messages>
-          {messages.map((item) => (
-            <Chat.Bubble key={item._id} {...item} />
-          ))}
-        </Chat.Messages>
-        <form className="flex justify-between items-center gap-4" onSubmit={sendMessage}>
-          <Input
-            placeholder="Write a message..."
-            value={message}
-            variant="bordered"
-            size="lg"
-            radius="full"
-            onChange={(e) => setMessage(e.target.value)}
-            className="w-full"
-            classNames={{
-              inputWrapper: "border-[1px]",
-              innerWrapper: "text-default-900"
-            }}
-          />
-          <Button
-            type="submit"
-            variant="solid"
-            isIconOnly
-            size="lg"
-            radius="full"
-            className=""
-          >
-            <SendIcon className="text-primary-900 text-xs" />
-          </Button>
-        </form>
-      </Chat.Base>
+      <Content />
       <audio ref={audioPlayer} src='./notification.mp3' />
     </div>
   );

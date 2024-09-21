@@ -74,6 +74,10 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('message-notify');
   });
 
+  socket.on('private message', ({ user, message, to }) => {
+    socket.to(to).emit('private message', { user, message });
+  })
+
   socket.on('disconnect', () => {
     console.log('(backend) User disconnected:', socket.id);
     const online = users.remove(socket.id);

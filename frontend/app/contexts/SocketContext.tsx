@@ -1,42 +1,50 @@
 'use client'
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode } from 'react';
 import { Socket } from 'socket.io-client';
+import { Message, User } from '../interfaces';
 
-interface User {
-  username: string;
-  avatar: string;
-  socketId?: string;
-}
-
-interface Message {
-  _id: string;
-  user: User;
-  message: string;
-  createdAt: string;
+interface MessagesInterface {
+  [key: string]: Message[];
 }
 
 interface SocketContextProps {
   socket: Socket | null;
   setSocket: React.Dispatch<React.SetStateAction<Socket | null>>;
-  messages: Message[];
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  messages: MessagesInterface;
+  setMessages: React.Dispatch<React.SetStateAction<MessagesInterface>>;
   user: User;
   setUser: React.Dispatch<React.SetStateAction<User>>;
   onlineUsers: User[];
   setOnlineUsers: React.Dispatch<React.SetStateAction<User[]>>;
+  activeChat: string[];
+  setActiveChat: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const SocketContext = createContext<SocketContextProps | undefined>(undefined);
 
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<MessagesInterface>({ main: [] });
   const [user, setUser] = useState<User>({ username: "", avatar: "", socketId: "" });
   const [onlineUsers, setOnlineUsers] = useState<User[]>([]);
+  const [activeChat, setActiveChat] = useState<string[]>(["main"]);
 
   return (
-    <SocketContext.Provider value={{ socket, setSocket, messages, setMessages, user, setUser, onlineUsers, setOnlineUsers }}>
+    <SocketContext.Provider
+      value={{
+        socket,
+        setSocket,
+        messages,
+        setMessages,
+        user,
+        setUser,
+        onlineUsers,
+        setOnlineUsers,
+        activeChat,
+        setActiveChat
+      }}
+    >
       {children}
     </SocketContext.Provider>
   );
