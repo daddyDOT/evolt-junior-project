@@ -37,7 +37,7 @@ const Header = () => {
             </div>
         </div>
 
-        <Drawer state={state} control={setState}>
+        <Drawer state={state}>
             <div className="w-full flex flex-col gap-[2rem] h-full">
                 <div className='w-full flex justify-between items-center'>
                     <Logo />

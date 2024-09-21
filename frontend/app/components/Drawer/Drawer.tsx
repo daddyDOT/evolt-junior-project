@@ -1,13 +1,11 @@
-import { Button } from "@nextui-org/react";
 import { ReactNode } from "react";
 
 interface DrawerProps {
   state: boolean;
-  control: (state: boolean) => void;
   children: ReactNode;
 }
 
-const Drawer = ({ state, control, children } : DrawerProps) => {
+const Drawer = ({ state, children } : DrawerProps) => {
 
   return (
     <div className="left-0 top-0 transition-all ease-in absolute w-full h-full" style={{ backgroundColor: state ? "#00000050" : "#00000000", zIndex: state ? "9999" : -1 }} >
