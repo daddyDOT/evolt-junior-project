@@ -3,11 +3,9 @@
 import axios from "axios";
 import { Message } from "../interfaces";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
-export async function getMessages() {
+export async function getMessages(url : string) {
     try {
-        const response = await axios.get(`${apiUrl}/messages`);
+        const response = await axios.get(`${url}/messages`);
         const data: Message[] = response.data;
         return data;
     } catch (error) {
