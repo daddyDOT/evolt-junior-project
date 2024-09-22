@@ -13,7 +13,8 @@ const Content = () => {
     messages,
     setMessages,
     user,
-    activeChat
+    activeChat,
+    setSeenOffset
   } = useSocketContext();
 
   const [message, setMessage] = useState<string>("");
@@ -28,13 +29,20 @@ const Content = () => {
   ;
 
   useEffect(() => {
+    const messageLength = messages[chatItem]?.length || 0;
+    setSeenOffset((prev) => ({ ...prev, [chatItem]: messageLength }));
+  }, [chatItem, messages, setSeenOffset]);
+
+  useEffect(() => {
     if (inView && limit < (messages[chatItem] || []).length) {
       setLimit((prev) => prev + 10);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView])
 
   useEffect(() => {
-    setChatItem(activeChat[0] === "main" ? "main" : activeChat[0].split("User")[0]);
+    const item = activeChat[0] === "main" ? "main" : activeChat[0].split("User")[0];
+    setChatItem(item);
   }, [activeChat]);
 
   const sendMessage = (ev: React.FormEvent<HTMLFormElement>) => {

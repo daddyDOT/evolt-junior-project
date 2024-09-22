@@ -12,7 +12,21 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ mobile, onClose } : SidebarProps) => {
-  const { user, onlineUsers, activeChat, setActiveChat } = useSocketContext();
+  const { user, onlineUsers, activeChat, setActiveChat, seenOffset, messages } = useSocketContext();
+
+  const UnseenBubble = ({ item } : { item : User }) => {
+    const liveCount = messages?.[String(item.socketId)]?.length || 0;
+    const seenCount = seenOffset[String(item.socketId)] || 0;
+
+    if (liveCount-seenCount === 0 || activeChat[0].includes(String(item.socketId))) return null;
+
+    return (
+      <span className="text-xs bg-primary-500 text-white px-2 py-[1px] rounded-full">
+        {liveCount-seenCount}
+      </span>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-[2rem] w-full md:w-[200px] h-full">
       {mobile ? (
@@ -79,6 +93,7 @@ const Sidebar = ({ mobile, onClose } : SidebarProps) => {
             startContent={
               <Image src={item.avatar} alt="user-photo" className="w-[20px] h-[20px]" />
             }
+            endContent={<UnseenBubble item={item} />}
           >
           <span>{item.username}</span>
           </Button>
