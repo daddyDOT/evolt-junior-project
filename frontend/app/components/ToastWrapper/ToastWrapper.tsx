@@ -26,7 +26,7 @@ const ToastWrapper = () => {
   return (
     <ToastContainer
       position={orientation ? "top-center" : "bottom-right"}
-      autoClose={200000}
+      autoClose={2000}
       limit={3}
       hideProgressBar={false}
       newestOnTop={false}
