@@ -80,3 +80,12 @@ docker compose up
 [📝 Socket.io + Next.js](https://socket.io/how-to/use-with-nextjs)
 
 [💾 Socket.io + Express](https://socket.io/how-to/use-with-express-session)
+
+
+<h3>Preview of an app</h3>
+
+<p align="center">
+  <img src="https://i.ibb.co/prbf7F7/Pixel-True-Mockup.png" alt="Preview of an app" width="700"/>
+</p>
+
+
