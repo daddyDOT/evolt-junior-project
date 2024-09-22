@@ -21,8 +21,6 @@ const ToastWrapper = () => {
     } 
   }, [])
 
-  console.log("orientation", orientation)
-
   return (
     <ToastContainer
       position={orientation ? "top-center" : "bottom-right"}
