@@ -70,12 +70,12 @@ io.on('connection', (socket) => {
       console.error('(backend) Error saving message:', error);
     }
 
+    socket.broadcast.emit('message notify', {});
     io.emit('message', {message: data.message, _id: newId, user: data.user});
-    socket.broadcast.emit('message-notify');
   });
 
-  socket.on('private message', ({ user, message, to }) => {
-    socket.to(to).emit('private message', { user, message });
+  socket.on('private message', ({ user, message, to, first }) => {
+    socket.to(to).emit('private message', { user, message, first });
   })
 
   socket.on('disconnect', () => {

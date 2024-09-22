@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "./components/Providers";
-import { ToastContainer } from "react-toastify";
 import Header from "./components/Header/Header";
+import ToastWrapper from "./components/ToastWrapper/ToastWrapper";
 
 export const metadata: Metadata = {
   title: "Messaging app",
@@ -22,20 +22,7 @@ export default function RootLayout({
             <Header />
             {children}
 
-            <ToastContainer
-              position="bottom-right"
-              autoClose={2000}
-              limit={3}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              stacked
-              theme="colored"
-            />
+            <ToastWrapper />
           </main>
         </Providers>
       </body>

@@ -19,6 +19,8 @@ interface SocketContextProps {
   setOnlineUsers: React.Dispatch<React.SetStateAction<User[]>>;
   activeChat: string[];
   setActiveChat: React.Dispatch<React.SetStateAction<string[]>>;
+  seenOffset: { [key: string]: number };
+  setSeenOffset: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>;
 }
 
 const SocketContext = createContext<SocketContextProps | undefined>(undefined);
@@ -29,6 +31,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User>({ username: "", avatar: "", socketId: "" });
   const [onlineUsers, setOnlineUsers] = useState<User[]>([]);
   const [activeChat, setActiveChat] = useState<string[]>(["main"]);
+  const [seenOffset, setSeenOffset] = useState<{ [key: string]: number }>({ main: 0 });
 
   return (
     <SocketContext.Provider
@@ -42,7 +45,9 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
         onlineUsers,
         setOnlineUsers,
         activeChat,
-        setActiveChat
+        setActiveChat,
+        seenOffset,
+        setSeenOffset
       }}
     >
       {children}
