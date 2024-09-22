@@ -34,9 +34,13 @@ export const setupSocket = ({
     if (data.first === true) {
       toast.info(`You received a new private message from: ${data.user.username}`);
     }
+
+    playSound();
   });
 
-  socketIo.on("message-notify", () => playSound);
+  socketIo.on("message notify", () => {
+    playSound()
+  });
 
   socketIo.on("send-socket-id", (data) => {
     setUser(data.user);

@@ -15,15 +15,13 @@ const Home = () => {
     setOnlineUsers
   } = useSocketContext();
 
-  const audioPlayer = useRef<HTMLAudioElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   const playSound = () => {
-    if (audioPlayer.current) {
-      audioPlayer.current.play()
-    } else {
-      console.error("Audio player not found");
+    if (audioRef.current) {
+      audioRef.current.play();
     }
-  }
+  };
 
   useEffect(() => {
     const socketIo = setupSocket({
@@ -66,7 +64,7 @@ const Home = () => {
       </div>
 
       <Content />
-      <audio ref={audioPlayer} src='./notification.mp3' />
+      <audio ref={audioRef} src={'/audio/notification.mp3'} />
     </div>
   );
 }
