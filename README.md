@@ -37,7 +37,7 @@ If you want to manually start frontend and backend, please visit /frontend and /
 git clone https://github.com/daddyDOT/evolt-junior-project.git
 ```
 
-<h3>Config .env variables</h2>
+<h2>Config .env variables</h2>
 
 Use the `.env.example` as reference to create your configuration file `.env` with your MongoDB Credentials
 
@@ -48,14 +48,16 @@ CLIENT_URL="http://frontend:3000"
 
 Environment variables for frontend are located in `./frontend/next.config.mjs`
 
-<h3>Install express locally in /backend</h2>
-
-Since this docker build requires express to be installed locally first, do:
-
-```yaml
-cd backend/
-npm install express --save
-```
+> [!IMPORTANT]
+> <h2>Install express locally in /backend</h2>
+> 
+> Since this docker build requires express to be installed locally first, do:
+> ```yaml
+> cd backend/
+> npm install express --save
+> ```
+> 
+> Don't forget to go back to the root directory for next step
 
 <h3>Starting</h3>
 
