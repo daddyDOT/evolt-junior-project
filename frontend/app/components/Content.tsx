@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useInView } from 'react-intersection-observer'
 import { Button, Input } from "@nextui-org/react";
 import { useSocketContext } from "../contexts/SocketContext";
@@ -22,6 +22,7 @@ const Content = () => {
   const [limit, setLimit] = useState<number>(10);
 
   const { ref, inView } = useInView();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const
     chatName = activeChat[0] === "main" ? "General chat" : ("User" + activeChat[0].split("User")[1]),
@@ -70,6 +71,8 @@ const Content = () => {
       });
     }
 
+    inputRef.current?.focus();
+
     setMessage("");
   }
 
@@ -89,6 +92,7 @@ const Content = () => {
           placeholder="Write a message..."
           value={message}
           variant="bordered"
+          ref={inputRef}
           size="lg"
           radius="full"
           onChange={(e) => setMessage(e.target.value)}
