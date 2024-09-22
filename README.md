@@ -21,6 +21,7 @@
 | Express  | Backend | [Express](https://expressjs.com/) |  
 | Next.js 14  |  Frontend | [Next.js](https://nextjs.org/) |
 | Socket.io  |  Low-latency communication tool | [Socket.io](https://socket.io/)  |
+| MongoDB  |  Database for storing messages | [MongoDB](https://www.mongodb.com/)  |
 | Next UI  |  Used to style a big part of the application  | [NextUI](https://nextui.org/)  |
 | Tailwind CSS |  Used as a CSS framework | [Tailwind CSS](https://tailwindcss.com/)  |
 | Docker |  Used to dockerize the application using a single compose file | [Docker](https://www.docker.com/)  |
