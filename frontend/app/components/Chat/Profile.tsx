@@ -10,7 +10,9 @@ const Profile = ({ user, children, tooltip, className } : { user: User, children
         radius="full"
         width={40}
         height={40}
-        className='flex-none'
+        classNames={{
+          wrapper: "flex-none",
+        }}
         alt="avatar"
       />
       <div className="flex flex-col">
