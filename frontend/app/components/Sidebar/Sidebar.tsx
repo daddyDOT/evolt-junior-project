@@ -52,7 +52,10 @@ const Sidebar = ({ mobile, onClose } : SidebarProps) => {
               activeChat[0] === "main" ? " bg-default-200" : " bg-default-100"
             )
           }
-          onClick={() => setActiveChat(["main"])}
+          onClick={() => {
+            setActiveChat(["main"]);
+            onClose && onClose();
+          }}
         >
           <span>Glavni razgovor</span>
         </Button>
@@ -64,7 +67,10 @@ const Sidebar = ({ mobile, onClose } : SidebarProps) => {
           <Button
             key={item.socketId}
             color="default"
-            onClick={() => setActiveChat([String(item.socketId + item.username)])}
+            onClick={() => {
+              setActiveChat([String(item.socketId + item.username)])
+              onClose && onClose();
+            }}
             className={
               "flex items-center gap-2 w-full my-3" + (
                 activeChat[0].includes(String(item.socketId)) ? " bg-default-200" : " bg-default-100"

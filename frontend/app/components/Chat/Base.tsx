@@ -36,10 +36,12 @@ const Base = ({ heading, description, children }: BaseProps) => {
 
   return (
     <div className={`bg-default-100 md:rounded-3xl w-full md:!h-full p-4 md:p-8 overflow-hidden flex flex-col justify-between gap-4 md:gap-8`} style={{ height: height }}>
-      <div className="hidden md:block">
-        <h1 className="text-default-900 text-md md:text-2xl font-bold md:mb-1">{heading}</h1>
-        <span className="text-default-500 text-xs md:text-sm">{description}</span>
+
+      <div className="flex justify-between w-full items-center md:block w-fit">
+        <h1 className="text-default-800 font-semibold text-sm md:text-default-900 md:text-2xl md:font-bold md:mb-1">{heading}</h1>
+        <span className="text-right text-default-500 text-xs md:text-sm md:text-left">{description}</span>
       </div>
+
       <Divider className="hidden md:block" />
       {children}
     </div>
