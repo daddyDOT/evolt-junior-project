@@ -1,16 +1,13 @@
 import { io, Socket } from "socket.io-client";
-import { Message, User } from "../interfaces";
+import { MessageList, User } from "../interfaces";
 import { toast } from "react-toastify";
+import { updateMessages } from "./updateMessages";
 
 const apiUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_SOCKET_URL : undefined;
 
-interface updatedMessagesProps extends Message {
-  to?: string;
-}
-
 interface SocketSetupParams {
   setSocket: (socket: Socket) => void;
-  updateMessages: ( { _id, user, message, to } : updatedMessagesProps ) => void;
+  setMessages: React.Dispatch<React.SetStateAction<MessageList>>;
   setUser: (user: User) => void;
   setOnlineUsers: (users: User[]) => void;
   playSound: () => void;
@@ -18,7 +15,7 @@ interface SocketSetupParams {
 
 export const setupSocket = ({
     setSocket,
-    updateMessages,
+    setMessages,
     setUser,
     setOnlineUsers,
     playSound
@@ -28,11 +25,15 @@ export const setupSocket = ({
   setSocket(socketIo);
 
   socketIo.on("message", (data : { message: string, _id: string, user: User }) => {
-    updateMessages({ ...data, createdAt: Date.now().toString() });
+    updateMessages({ ...data, createdAt: Date.now().toString(), setStateAction: setMessages });
   });
 
-  socketIo.on("private message", (data : { message: string, user: User }) => {
-    updateMessages({ ...data, createdAt: Date.now().toString(), to: data.user.socketId });
+  socketIo.on("private message", (data : { message: string, user: User, first : boolean }) => {
+    updateMessages({ ...data, createdAt: Date.now().toString(), to: data.user.socketId, setStateAction: setMessages });
+
+    if (data.first === true) {
+      toast.info(`You received a new private message from: ${data.user.username}`);
+    }
   });
 
   socketIo.on("message-notify", () => playSound);

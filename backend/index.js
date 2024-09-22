@@ -74,8 +74,8 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('message-notify');
   });
 
-  socket.on('private message', ({ user, message, to }) => {
-    socket.to(to).emit('private message', { user, message });
+  socket.on('private message', ({ user, message, to, first }) => {
+    socket.to(to).emit('private message', { user, message, first });
   })
 
   socket.on('disconnect', () => {
