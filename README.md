@@ -48,6 +48,15 @@ CLIENT_URL="http://frontend:3000"
 
 Environment variables for frontend are located in `./frontend/next.config.mjs`
 
+<h3>Install express locally in /backend</h2>
+
+Since this docker build requires express to be installed locally first, do:
+
+```yaml
+cd backend/
+npm install express --save
+```
+
 <h3>Starting</h3>
 
 ```bash
