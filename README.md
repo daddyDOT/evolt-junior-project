@@ -34,7 +34,7 @@ If you want to manually start frontend and backend, please visit /frontend and /
 <h3>Cloning</h3>
 
 ```bash
-git clone https://github.com/daddyDOT/evolt-junior-project.git
+git clone https://github.com/daddyDOT/chatter-app.git
 ```
 
 <h2>Config .env variables</h2>
@@ -62,7 +62,7 @@ Environment variables for frontend are located in `./frontend/next.config.mjs`
 <h3>Starting</h3>
 
 ```bash
-cd evolt-junior-project
+cd chatter-app
 docker compose build
 docker compose up
 ```
